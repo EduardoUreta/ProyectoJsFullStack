@@ -57,41 +57,58 @@ document.addEventListener("DOMContentLoaded", async () => {
         `;
 
         document.getElementById(`btnComprar-${data.id}`).addEventListener("click", async (e) => {
-            const token = document.cookie.split('; ').find(row => row.startsWith('Bearer=')).split('=')[1];
-            const user = parseJwt(token);
+            if(document.cookie){
+                const token = document.cookie.split('; ').find(row => row.startsWith('Bearer=')).split('=')[1];
+                const user = parseJwt(token);
+    
+                const UsuarioId = user._id;
+                const LibroId = data.id;
+    
+                try {
+    
+                    const response = await fetch(`/purchases/`, {
+                        method: "POST",
+                        headers: {'Content-Type':'application/json'},
+                        body: JSON.stringify({UsuarioId, LibroId})
+                    });
+            
+                    Swal.fire({
+                        title: `¡Compraste el libro: ${data.nombre}!`,
+                        text: "Te redirigiremos a la sección tienda",
+                        icon: 'success',
+                        confirmButtonText: 'Aceptar'
+                    });
+                    setTimeout(() => {
+                        window.location.replace("/tienda"); 
+                    }, 5000);
+            
+                } catch (error) {
+                    Swal.fire({
+                        title: 'Error en el servidor',
+                        icon: 'error',
+                        text: 'Intenta más tarde',
+                        confirmButtonText: 'Aceptar'
+                    });
+                    setTimeout(() => {
+                        // window.location.href = `/detalle-libro/${LibroId}`;
+                    }, 2500);
+                };
 
-            const UsuarioId = user._id;
-            const LibroId = data.id;
-
-            try {
-
-                const response = await fetch(`/purchases/`, {
-                    method: "POST",
-                    headers: {'Content-Type':'application/json'},
-                    body: JSON.stringify({UsuarioId, LibroId})
-                });
-        
+            } else {
                 Swal.fire({
-                    title: `¡Compraste el libro: ${data.nombre}!`,
-                    text: "Te redirigiremos a la sección tienda",
-                    icon: 'success',
-                    confirmButtonText: 'Aceptar'
-                });
-                setTimeout(() => {
-                    window.location.replace("/tienda"); 
-                }, 5000);
-        
-            } catch (error) {
-                Swal.fire({
-                    title: 'Error en el servidor',
-                    icon: 'error',
-                    text: 'Intenta más tarde',
-                    confirmButtonText: 'Aceptar'
-                });
-                setTimeout(() => {
-                    // window.location.href = `/detalle-libro/${LibroId}`;
-                }, 2500);
-            };
+                    title: "Debes iniciar sesión para comprar",
+                    showDenyButton: true,
+                    confirmButtonText: "Ir a login",
+                    denyButtonText: `Cancelar`
+                  }).then((result) => {
+                    /* Read more about isConfirmed, isDenied below */
+                    if (result.isConfirmed) {
+                      window.location.replace("/login");
+                    } 
+                  });
+                
+            }
+            
             
         });
 
