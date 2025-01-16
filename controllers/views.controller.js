@@ -42,7 +42,6 @@ export class ViewsController {
         res.render("listado-libros");
     };
 
-    
     // static logout = async (req, res, next) => {
     //     res.render("inicio");
     // };

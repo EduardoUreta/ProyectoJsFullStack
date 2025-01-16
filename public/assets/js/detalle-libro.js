@@ -50,10 +50,65 @@ document.addEventListener("DOMContentLoaded", async () => {
                     </div>
                 </div>
             </div>
+
+            <div class="container p-3">
+                <button class="btn btn-success btn-lg" id="btnComprar-${data.id}">Comprar</button>
+            </div>
         `;
+
+        document.getElementById(`btnComprar-${data.id}`).addEventListener("click", async (e) => {
+            const token = document.cookie.split('; ').find(row => row.startsWith('Bearer=')).split('=')[1];
+            const user = parseJwt(token);
+
+            const UsuarioId = user._id;
+            const LibroId = data.id;
+
+            try {
+
+                const response = await fetch(`/purchases/`, {
+                    method: "POST",
+                    headers: {'Content-Type':'application/json'},
+                    body: JSON.stringify({UsuarioId, LibroId})
+                });
+        
+                Swal.fire({
+                    title: `¡Compraste el libro: ${data.nombre}!`,
+                    text: "Te redirigiremos a la sección tienda",
+                    icon: 'success',
+                    confirmButtonText: 'Aceptar'
+                });
+                setTimeout(() => {
+                    window.location.replace("/tienda"); 
+                }, 5000);
+        
+            } catch (error) {
+                Swal.fire({
+                    title: 'Error en el servidor',
+                    icon: 'error',
+                    text: 'Intenta más tarde',
+                    confirmButtonText: 'Aceptar'
+                });
+                setTimeout(() => {
+                    // window.location.href = `/detalle-libro/${LibroId}`;
+                }, 2500);
+            };
+            
+        });
+
 
 
     } catch (error) {
         console.error("Error al obtener los libros:", error);
     };
 });
+
+
+function parseJwt(token) {
+    if (!token) {
+        return;
+    }
+    const base64Url = token.split(".")[1]; // Obtiene la segunda parte del token (payload)
+    const base64 = base64Url.replace("-", "+").replace("_", "/"); // Decodifica el base64Url para que tenga el formato estándar
+    return JSON.parse(window.atob(base64)); // Convierte el base64 a JSON y lo parsea
+}
+  
