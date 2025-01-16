@@ -1,0 +1,40 @@
+<div class="p-5" id="Pagina-agregar-libro">
+    <div class="container mt-2 card p-4 w-75">
+        <h1 class="text-center">Agregar Libro</h1>
+        <form id="addBookForm" class="p-2" enctype="multipart/form-data">
+            <div class="form-group mb-3 ">
+                <label for="nombre">Nombre</label>
+                <input type="text" class="form-control" id="nombre" placeholder="Ingresa nombre" required>
+            </div>
+            <div class="form-group mb-3">
+                <label for="descripcion">Descripción</label>
+                <input type="text" class="form-control" id="descripcion" placeholder="Ingresa descripción" required>
+            </div>
+            <div class="form-group mb-3">
+                <label for="CategoriaId">Categoria</label>
+                <div>
+                    <select id="CategoriaId" name="CategoriaId" class="cargarCategorias form-control" required>
+                    </select>
+                </div>
+            </div>
+            <div class="form-group mb-3">
+                <label for="AutorId">Autor</label>
+                <div>
+                    <select id="AutorId" name="AutorId" class="cargarAutores form-control" required>
+                    </select>
+                </div>
+            </div>
+            <div class="form-group mb-3">
+                <label for="imagen">Imagen</label>
+                <div class="mt-1">
+                    <input type="file" id="imagen" name="imagen" accept="image/*" class="form-control"/>
+                </div>
+            </div>
+            <div class="d-flex justify-content-end">
+                <button type="submit" class="btn btn-primary">Guardar</button>
+            </div>
+        </form>
+    </div>
+</div>
+
+<script src="/assets/js/agregar-libro.js"></script>
