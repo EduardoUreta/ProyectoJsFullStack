@@ -1,6 +1,5 @@
 const bookCard = document.getElementById("bookCard");
-const autores = document.querySelector(".cargarAutores");
-const categorias = document.querySelector(".cargarCategorias");
+
 
 document.addEventListener("DOMContentLoaded", async() => {
 
@@ -11,36 +10,6 @@ document.addEventListener("DOMContentLoaded", async() => {
         });
 
         const data = await response.json();
-
-        try {
-            const responseAutor = await fetch("/authors", {
-                method: "GET",
-                headers: {'Content-Type':'application/json'}
-            });
-    
-            const dataAuthor = await responseAutor.json();
-    
-            const responseCategoria = await fetch("/categories", {
-                method: "GET",
-                headers: {'Content-Type':'application/json'}
-            });
-    
-            const dataCategories = await responseCategoria.json();
-   
-            // Revisar
-            autores.innerHTML = dataAuthor.map((autor) => `
-                <option value="${autor.id}" ${data.AutorId == autor.id ? 'selected' : ''}>${autor.nombre + ' ' + autor.apellido}</option>
-            `).join(' ');
-    
-            categorias.innerHTML = dataCategories.map((categoria) => `
-                <option value="${categoria.id}">${categoria.nombre}</option>
-            `).join(' ');
-
-            // Revisar
-        } catch (error) {
-            console.error("Error al obtener los autores o categorias:", error);
-        };
-
 
         bookCard.innerHTML = data.map((book) => `
             <div class="col-lg-4 col-sm-6 mb-4">
@@ -73,7 +42,7 @@ document.addEventListener("DOMContentLoaded", async() => {
             });
         });
 
-        document.querySelectorAll('button[data-id]').forEach(button => {
+        document.querySelectorAll('button[data-id]:not([data-bs-target="#modalUpdateBook"])').forEach(button => {
             button.addEventListener("click", async (e) => {
                 const bookId = e.target.getAttribute('data-id');
                 

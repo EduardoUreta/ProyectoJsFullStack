@@ -1,8 +1,44 @@
 const tituloModal = document.getElementById('modalUpdateBookLabel');
 const formUpdate = document.getElementById("updateBookForm");
+const nombre = document.getElementById("nombre");
+const descripcion = document.getElementById("descripcion");
+const autores = document.querySelector(".cargarAutores");
+const categorias = document.querySelector(".cargarCategorias");
 
-const updateBook = (book) => {
+const updateBook = async(book) => {
     tituloModal.innerHTML = `Editando a ${book.nombre}`;
+
+    nombre.value = `${book.nombre}`;
+    descripcion.value = `${book.descripcion}`;
+
+    try {
+        const responseAutor = await fetch("/authors", {
+            method: "GET",
+            headers: {'Content-Type':'application/json'}
+        });
+
+        const dataAuthor = await responseAutor.json();
+
+        const responseCategoria = await fetch("/categories", {
+            method: "GET",
+            headers: {'Content-Type':'application/json'}
+        });
+
+        const dataCategories = await responseCategoria.json();
+
+        // Revisar
+        autores.innerHTML = dataAuthor.map((autor) => `
+            <option value="${autor.id}" ${book.AutorId == autor.id ? 'selected' : ''}>${autor.nombre + ' ' + autor.apellido}</option>
+        `).join(' ');
+
+        categorias.innerHTML = dataCategories.map((categoria) => `
+            <option value="${categoria.id}" ${book.CategoriaId == categoria.id ? 'selected' : ''}>${categoria.nombre}</option>
+        `).join(' ');
+
+        // Revisar
+    } catch (error) {
+        console.error("Error al obtener los autores o categorias:", error);
+    };
 
     formUpdate.addEventListener("submit", async (e) => {
         e.preventDefault();
